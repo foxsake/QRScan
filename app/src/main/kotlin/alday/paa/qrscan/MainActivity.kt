@@ -7,9 +7,12 @@ import android.view.Menu
 import android.view.MenuItem
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
+import java.net.Socket
+import org.jetbrains.anko.doAsync
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private var mScannerView: ZXingScannerView? = null
+    private var mText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +52,17 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(result: Result) {
-        Log.v("QRScan", result.text)
+        mText = result.text
+        Log.v("QRScan", mText)
         Log.v("QRScan", result.barcodeFormat.toString())
+
+        doAsync {
+            var socket : Socket = Socket("127.0.0.1", 59900)
+            var bos : java.io.BufferedOutputStream =
+                    java.io.BufferedOutputStream(socket.getOutputStream())
+            bos.write(mText.toByteArray())
+            bos.flush()
+            bos.close()
+        }
     }
 }

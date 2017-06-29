@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/QRScan.iml" filepath="$PROJECT_DIR$/QRScan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qserver/qserver.iml" filepath="$PROJECT_DIR$/qserver/qserver.iml" />
     </modules>
   </component>
 </project>

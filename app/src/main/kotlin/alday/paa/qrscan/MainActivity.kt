@@ -9,20 +9,31 @@ import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import java.net.Socket
 import org.jetbrains.anko.doAsync
+import android.os.Vibrator
+import android.content.Context
+
+import kotlinx.android.synthetic.main.content_main.scannerView
+import kotlinx.android.synthetic.main.activity_main.fab
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
-    private var mScannerView: ZXingScannerView? = null
     private var mText: String = ""
+    private var flashOn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mScannerView = ZXingScannerView(this)
-        setContentView(mScannerView)
+        setContentView(R.layout.activity_main)
+
+        scannerView.setOnClickListener { scannerView.resumeCameraPreview(this) }
+        fab.setOnClickListener {
+            scannerView.setFlash(!flashOn)
+            flashOn = !flashOn
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
+        //TODO add history
         return true
     }
 
@@ -42,19 +53,21 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     override fun onResume() {
         super.onResume()
-        mScannerView?.setResultHandler(this)
-        mScannerView?.startCamera()
+        scannerView.setResultHandler(this)
+        scannerView.startCamera()
     }
 
     override fun onPause() {
         super.onPause()
-        mScannerView?.stopCamera()
+        scannerView.stopCamera()
     }
 
     override fun handleResult(result: Result) {
         mText = result.text
         Log.v("QRScan", mText)
         Log.v("QRScan", result.barcodeFormat.toString())
+        var vibrator : Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(100)
 
         doAsync {
             var socket : Socket = Socket("127.0.0.1", 59900)

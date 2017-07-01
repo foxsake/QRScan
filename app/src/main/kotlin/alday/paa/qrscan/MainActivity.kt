@@ -9,8 +9,10 @@ import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import java.net.Socket
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
 import android.os.Vibrator
 import android.content.Context
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 
 import kotlinx.android.synthetic.main.content_main.scannerView
@@ -19,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.fab
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private var mText: String = ""
     private var flashOn: Boolean = false
+    private var doubleBack: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,23 +41,16 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         //TODO add history
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
-
-
         if (id == R.id.action_settings) {
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -67,6 +63,22 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun onPause() {
         super.onPause()
         scannerView.stopCamera()
+    }
+
+    override fun onBackPressed() {
+        if(doubleBack){
+            super.onBackPressed();
+            return;
+        }
+        var vv :ZXingScannerView = scannerView
+        scannerView.resumeCameraPreview(this)
+        doubleBack = true
+        toast("Press back again to exit")
+        Handler().postDelayed(object : Runnable {
+            override fun run() {
+                doubleBack = false
+            }
+        }, 2000)
     }
 
     override fun handleResult(result: Result) {

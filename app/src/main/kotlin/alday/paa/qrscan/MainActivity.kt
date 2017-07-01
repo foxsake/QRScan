@@ -15,7 +15,7 @@ import android.content.Context
 import android.os.Handler
 import android.support.v4.content.ContextCompat
 
-import kotlinx.android.synthetic.main.content_main.scannerView
+import kotlinx.android.synthetic.main.activity_main.scannerView
 import kotlinx.android.synthetic.main.activity_main.fab
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {

@@ -37,18 +37,17 @@ public class Server {
         if(SystemTray.isSupported()){
             SystemTray tray = SystemTray.getSystemTray();
             Image image = Toolkit.getDefaultToolkit().getImage("image.png");
-            ActionListener listener = new ActionListener() {
+            PopupMenu popup = new PopupMenu();
+            MenuItem defaultItem = new MenuItem("Exit");
+            defaultItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    //TODO add action
+                    run =false;
                 }
-            };
-            PopupMenu popup = new PopupMenu();
-            MenuItem defaultItem = new MenuItem("exit");
-            defaultItem.addActionListener(listener);
+            });
             popup.add(defaultItem);
             trayIcon = new TrayIcon(image, "QRScanner", popup);
-            trayIcon.addActionListener(listener);
+            //trayIcon.addActionListener(listener);
             try{
                 tray.add(trayIcon);
             }catch (AWTException e) {
@@ -60,11 +59,12 @@ public class Server {
             public void run() {
                 try {
                     ServerSocket serverSocket = new ServerSocket(59900);
-                    System.out.println("Waiting for clients to connect...");
+                    System.out.println("Waiting for scanned text...");
                     while (run) {
                         Socket clientSocket = serverSocket.accept();
                         clientProcessingPool.submit(new ClientTask(clientSocket));
                     }
+                    System.out.println("Closed");
                 } catch (IOException e) {
                     System.err.println("Unable to process client request");
                     e.printStackTrace();

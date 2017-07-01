@@ -6,3 +6,16 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+task deleteJar(type: Delete) {
+    delete 'libs/qscanserver.jar'
+}
+
+task createJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('libs/jars/')
+    include('classes.jar')
+    rename('classes.jar', 'qscanserver.jar')
+}
+
+createJar.dependsOn(deleteJar, build)

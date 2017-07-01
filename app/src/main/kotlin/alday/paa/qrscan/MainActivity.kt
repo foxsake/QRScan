@@ -11,6 +11,7 @@ import java.net.Socket
 import org.jetbrains.anko.doAsync
 import android.os.Vibrator
 import android.content.Context
+import android.support.v4.content.ContextCompat
 
 import kotlinx.android.synthetic.main.content_main.scannerView
 import kotlinx.android.synthetic.main.activity_main.fab
@@ -27,6 +28,12 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         fab.setOnClickListener {
             scannerView.setFlash(!flashOn)
             flashOn = !flashOn
+            if(flashOn)
+                fab.setImageDrawable(
+                        ContextCompat.getDrawable(fab.getContext(), R.drawable.ic_flash_off))
+            else
+                fab.setImageDrawable(
+                        ContextCompat.getDrawable(fab.getContext(), R.drawable.ic_flash_on))
         }
     }
 

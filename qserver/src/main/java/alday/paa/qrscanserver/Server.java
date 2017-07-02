@@ -16,12 +16,11 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.swing.Popup;
 
 public class Server {
     private boolean run = true;
@@ -65,6 +64,8 @@ public class Server {
                         clientProcessingPool.submit(new ClientTask(clientSocket));
                     }
                     System.out.println("Closed");
+                } catch (BindException b){
+                    System.err.println("Port already in use.");
                 } catch (IOException e) {
                     System.err.println("Unable to process client request");
                     e.printStackTrace();
@@ -90,7 +91,6 @@ public class Server {
                 BufferedReader br = new BufferedReader(reader);
                 String msg = br.readLine();
                 System.out.println("Scanned: " + msg);
-                br.close();
 
                 StringSelection selection = new StringSelection(msg);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -101,6 +101,7 @@ public class Server {
                 r.keyRelease(KeyEvent.VK_CONTROL);
                 r.keyRelease(KeyEvent.VK_V);
 
+                br.close();
                 clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();

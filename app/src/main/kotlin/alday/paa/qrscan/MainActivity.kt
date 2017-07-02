@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.scannerView
 import kotlinx.android.synthetic.main.activity_main.fab
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
-    private var mText: String = ""
     private var flashOn: Boolean = false
     private var doubleBack: Boolean = false
 
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(result: Result) {
-        mText = result.text
+        var mText: String = result.text
         Log.v("QRScan", mText)
         Log.v("QRScan", result.barcodeFormat.toString())
         var vibrator : Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -90,11 +89,9 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         doAsync {
             var socket : Socket = Socket("127.0.0.1", 59900)
-            var bos : java.io.BufferedOutputStream =
-                    java.io.BufferedOutputStream(socket.getOutputStream())
-            bos.write(mText.toByteArray())
-            bos.flush()
-            bos.close()
+            var os : java.io.DataOutputStream = java.io.DataOutputStream(socket.getOutputStream())
+            os.writeBytes(mText)
+            os.close();
         }
     }
 }

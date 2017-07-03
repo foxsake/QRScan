@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import java.net.Socket
+import android.content.Intent
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import android.os.Vibrator
@@ -17,6 +18,7 @@ import android.support.v4.content.ContextCompat
 
 import kotlinx.android.synthetic.main.activity_main.scannerView
 import kotlinx.android.synthetic.main.activity_main.fab
+import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private var flashOn: Boolean = false
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
         scannerView.setOnClickListener { scannerView.resumeCameraPreview(this) }
         fab.setOnClickListener {
@@ -41,13 +44,14 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        //TODO add history
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.action_settings) {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -69,7 +73,6 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             super.onBackPressed();
             return;
         }
-        var vv :ZXingScannerView = scannerView
         scannerView.resumeCameraPreview(this)
         doubleBack = true
         toast("Press back again to exit")
@@ -81,17 +84,35 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(result: Result) {
+        val prefs = Prefs(this)
         var mText: String = result.text
         Log.v("QRScan", mText)
         Log.v("QRScan", result.barcodeFormat.toString())
-        var vibrator : Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(100)
+
+        if(prefs.vibrate) {
+            var vibrator: Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(100)
+        }
 
         doAsync {
-            var socket : Socket = Socket("127.0.0.1", 59900)
+            var ip: String = getString(R.string.text_default_ip)
+            if(prefs.wireless)
+                ip = prefs.ip
+
+            var socket : Socket = Socket(ip, prefs.port)
             var os : java.io.DataOutputStream = java.io.DataOutputStream(socket.getOutputStream())
             os.writeBytes(mText)
             os.close();
         }
+    }
+
+    class Prefs (context: Context){
+        val prefs = android.preference.PreferenceManager
+                .getDefaultSharedPreferences(context)
+        val vibrate = prefs.getBoolean("vibrate_switch", true)
+        val wireless = prefs.getBoolean("wireless_switch", false)
+        val ip = prefs.getString("ip_text", context.getString(R.string.text_default_ip))
+        val port = Integer.parseInt(
+                prefs.getString("port_text", context.getString(R.string.text_default_port)))
     }
 }

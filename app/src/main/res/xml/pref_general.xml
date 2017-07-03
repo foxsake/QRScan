@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/text_default_port"
+        android:key="port_text"
+        android:summary="Port set on the server"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Port" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="wireless_switch"
+        android:summary="Connect through wifi instead of usb."
+        android:title="Enable Wireless Connection" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:dependency="wireless_switch"
+        android:defaultValue="@string/text_default_ip"
+        android:key="ip_text"
+        android:summary="IP address of computer running the server."
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Host IP" />
+</PreferenceScreen>

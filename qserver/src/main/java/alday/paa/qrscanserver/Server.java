@@ -33,6 +33,8 @@ public class Server {
     private void startServer() {
         final ExecutorService clientProcessingPool = Executors.newFixedThreadPool(10);
 
+        //TODO run adb
+        //Runtime.getRuntime().exec("<PLATFORM-TOOLS DIR>/adb forward tcp:7444 tcp:7444");
         if(SystemTray.isSupported()){
             SystemTray tray = SystemTray.getSystemTray();
             Image image = Toolkit.getDefaultToolkit().getImage("image.png");
@@ -57,7 +59,7 @@ public class Server {
             @Override
             public void run() {
                 try {
-                    ServerSocket serverSocket = new ServerSocket(59900);
+                    ServerSocket serverSocket = new ServerSocket(7444);
                     System.out.println("Waiting for scanned text...");
                     while (run) {
                         Socket clientSocket = serverSocket.accept();

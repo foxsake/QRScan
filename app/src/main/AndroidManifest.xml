@@ -27,6 +27,8 @@
             android:name=".SettingsActivity"
             android:label="@string/action_settings"
             />
+        <activity android:name=".MainIntroActivity"
+            android:theme="@style/Theme.Intro"/>
     </application>
 
 </manifest>

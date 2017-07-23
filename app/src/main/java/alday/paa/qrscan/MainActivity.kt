@@ -19,11 +19,16 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
+import android.view.View
+import org.jetbrains.anko.*
 
 import kotlinx.android.synthetic.main.activity_main.scannerView
 import kotlinx.android.synthetic.main.activity_main.fab
 import kotlinx.android.synthetic.main.activity_main.toolbar
-import org.jetbrains.anko.*
+import kotlinx.android.synthetic.main.activity_main.resultLayout
+import kotlinx.android.synthetic.main.activity_main.resultText
+import kotlinx.android.synthetic.main.activity_main.formatText
+
 
 class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private var flashOn: Boolean = false
@@ -38,7 +43,12 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         requestCameraPermission()
 
-        scannerView.setOnClickListener { scannerView.resumeCameraPreview(this) }
+        scannerView.setOnClickListener {
+            scannerView.resumeCameraPreview(this)
+            resultLayout.visibility = View.GONE
+            resultText.text = ""
+            formatText.text = ""
+        }
         fab.setOnClickListener {
             scannerView.flash = !flashOn
             flashOn = !flashOn
@@ -128,13 +138,18 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun handleResult(result: Result) {
         val prefs = Prefs(this)
         val mText: String = result.text
+        val mFormat: String = result.barcodeFormat.toString()
         Log.v("QRScan", mText)
-        Log.v("QRScan", result.barcodeFormat.toString())
+        Log.v("QRScan", mFormat)
 
         if(prefs.vibrate) {
             val vibrator: Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(100)
         }
+
+        resultText.text = mText
+        formatText.text = mFormat
+        resultLayout.visibility = View.VISIBLE
 
         doAsync {
             var ip: String = getString(R.string.text_default_ip)

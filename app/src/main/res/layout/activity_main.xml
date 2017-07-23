@@ -23,8 +23,50 @@
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/scannerView"
+        tools:background="#aaaaaa"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/resultLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/horizontal_margin"
+        android:paddingRight="@dimen/horizontal_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/scannedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:text="@string/text_scanned" />
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scannedLabel"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+            tools:text="asdlaksdkfaslkdkasdkasdklakdkladlakldalkdlakdlkakdladkladk" />
+
+        <TextView
+            android:id="@+id/formatLabel"
+            android:layout_below="@id/resultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:text="@string/text_format" />
+
+        <TextView
+            android:id="@+id/formatText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/formatLabel"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+            tools:text="QR Code" />
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

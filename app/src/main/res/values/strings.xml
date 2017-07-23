@@ -5,4 +5,6 @@
     <string name="text_default_port">7444</string>
     <string name="text_runtime_request_camera_permission">This app relies on the camera to work. Grant me permission to use camera</string>
     <string name="text_back_to_exit">Press back again to exit</string>
+    <string name="text_scanned">Scanned:</string>
+    <string name="text_format">Format:</string>
 </resources>
